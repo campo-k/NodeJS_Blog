@@ -1,0 +1,109 @@
+<% include ../header.ejs %>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        제목 : <%=post.title%>
+    </div>
+    <div class="panel-body">
+        <p>
+            작성일 : <%= post.getDate.year %>-<%= post.getDate.month %>-<%= post.getDate.day %>    
+        </p>   
+        
+        <% if(post.thumbnail){%>
+        <p>
+            <img src="/uploads/<%=post.thumbnail%>" style="max-width: 100%"/>
+        </p>
+        <% } %>
+
+        <%= post.content %>
+
+        <hr/>
+
+        <div id="comment_area">
+            <% comments.forEach(function(comment){ %>
+                <div>
+                    <%=comment.content%>
+                    ( <a class='comment_delete' comment_id='<%=comment.id%>'>삭제</a> ) 
+                </div>
+            <% }); %>
+        </div>
+
+        <div>
+            댓글작성하기
+            <form id="commentForm" action="" method="post">
+                <input type="hidden" name="post_id" value="<%=post.id%>" />
+                <textarea class="form-control" name="content"></textarea>
+                <button class="btn btn-primary" style="margin-top: 10px">댓글작성</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container" style="margin-top:20px;">
+    <a href="/posts" class="btn btn-primary">목록으로</a>
+    <a href="/posts/edit/<%=post.id%>" class="btn btn-default">수정</a>
+    <a href="/posts/delete/<%=post.id%>" class="btn btn-danger" onclick="return confirm('삭제하시겠습니까?')">삭제</a>
+</div>
+
+
+
+
+<script type="text/javascript">
+(function(){
+    $(document).ready(function() {
+        $('#commentForm').submit(function(){
+            var contentTxt = $(this).children('textarea[name=content]');
+
+            if (!contentTxt.val()) {
+                alert('댓글 내용을 확인하여 주십시오.');
+                contentTxt.focus();
+            }
+            else {
+                $.ajax({
+                    url: '/posts/ajax_comment/insert',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                })
+                .done(function(args) {
+                    if(args.message==="success"){
+                        $('#comment_area').append( 
+                            "<div>" + args.content + 
+                            " ( <a class='comment_delete' comment_id='"+ args.id +"'>삭제</a> ) </div>" 
+                        );
+                        contentTxt.val("");
+                        alert("댓글 작성이 완료되었습니다.");
+                    }
+                })
+                .fail(function(err) {
+                    console.log(err);
+                })
+                
+            }
+
+            return false;
+        });
+
+        $(document).on('click' , '.comment_delete' , function(){
+            if(confirm('삭제하시겠습니까?')){ //확인창 예 눌렀을 시만 진행
+                var $self = $(this);
+                $.ajax({
+                    url: '/posts/ajax_comment/delete',
+                    type: 'POST',
+                    data: { comment_id : $self.attr('comment_id') },
+                })
+                .done(function() {
+                    $self.parent().remove();
+                    alert("삭제가 완료되었습니다.");
+                })
+                .fail(function(args) {
+                    console.log(args);
+                });
+            }
+        });
+
+        $('ul.navbar-nav').find('li').removeClass('active');
+        $('ul.navbar-nav').find('li:eq(1)').addClass('active');
+    });
+})();
+</script>
+
+<% include ../footer.ejs %>

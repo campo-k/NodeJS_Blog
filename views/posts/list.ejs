@@ -1,0 +1,28 @@
+<% include ../header.ejs %>
+
+    <table class="table table-bordered">
+        <tr>
+            <td>제목</td>
+            <td>작성일</td>
+            <td>삭제</td>
+        </tr>
+        <% posts.forEach(function(post){ %>
+        <tr>
+            <td><a href="/posts/detail/<%=post.id%>" onclick=""><%= post.title %></a></td>
+            <td><%= post.getDate.year %>-<%= post.getDate.month %>-<%= post.getDate.day %></td>
+            <td><a href="/posts/delete/<%=post.id%>" class="btn btn-danger" onclick="return confirm('삭제하시겠습니까?')">삭제</a></td>
+        </tr>
+        <% }); %>
+    </table>
+    <div>
+        <a href="/posts/write" class="btn btn-primary">글작성</a>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('ul.navbar-nav').find('li').removeClass('active');
+            $('ul.navbar-nav').find('li:eq(1)').addClass('active');
+        });
+    </script>
+
+<% include ../footer.ejs %>

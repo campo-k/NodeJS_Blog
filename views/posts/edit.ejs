@@ -1,0 +1,40 @@
+<% include ../header.ejs %>
+
+    <form action="" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
+        <table class="table table-bordered">
+            <tr>
+                <td style="vertical-align:middle;">제목</td>
+                <td><input type="text" name="title" class="form-control" value="<%=post.title%>" /></td>
+            </tr>
+            <tr>
+                <td style="vertical-align:middle;">내용</td>
+                <td>
+                <input type="text" name="content" class="form-control" style="resize: none; height: 300px" value="<%=post.content%>" />    
+                </td>
+            </tr>
+            <tr>
+                <th>섬네일</th>
+                <td>
+                    <input type="file" name="thumbnail"  />
+                    
+                    <% if(post.thumbnail){ %>
+                    <a href="/uploads/<%=post.thumbnail%>" target="_blank">업로드 이미지 보기</a>
+                    <% } %>
+                </td>
+            </tr>
+        </table>
+
+        <div>
+            <button class="btn btn-default">작성하기</button>
+        </div>
+    </form>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('ul.navbar-nav').find('li').removeClass('active');
+            $('ul.navbar-nav').find('li:eq(1)').addClass('active');
+        });
+    </script>
+
+<% include ../footer.ejs %>
