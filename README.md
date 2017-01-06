@@ -14,6 +14,7 @@
 > - routing 규칙 (common.js, l5-p47)
 > - template 사용 (common.js, l5-p52)
 > - mongoose 설치 (common.js, l5-p54)
+
 2. router
 3. view
 4. model
@@ -28,6 +29,5 @@
 
 2. xss, csrf 공격 (l6-p30)
 3. validator (l6-p42)
-
 4. 회원가입
 5. passport
