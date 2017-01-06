@@ -27,14 +27,10 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage });
 
 
-
-
 function myMiddle (req, res, next) {
     req.test =  "kbs / " + new Date();
     next();
 }
-
-
 
 
 /* GET home page. */
@@ -44,7 +40,6 @@ router.get('/', myMiddle, function(req, res, next) {
         res.render('posts/list', {posts: posts});
     });
 });
-
 router.get('/detail/:id', function(req, res) {
     postModel.findOne({ id: req.params.id}, function(err, post) {
         commentModel.find({ post_id: req.params.id }, function(err, comments) {
@@ -54,14 +49,11 @@ router.get('/detail/:id', function(req, res) {
 });
 
 
-
-
 router.get('/edit/:id', loginRequired, parseForm, csrfProtection, function(req,res) {
     postModel.findOne({id: req.params.id}, function(err, post) {
         res.render('posts/edit', {post: post, csrfToken: req.csrfToken()});
     })
 });
-
 router.post('/edit/:id', loginRequired, upload.single('thumbnail'), csrfProtection, function(req,res) {
     postModel.findOne({id:req.params.id}, function(err, post) {
         if (req.file) {
@@ -81,13 +73,10 @@ router.post('/edit/:id', loginRequired, upload.single('thumbnail'), csrfProtecti
 });
 
 
-
-
 router.get('/write', loginRequired, parseForm, csrfProtection, function(req, res) {
     var post = {};
     res.render('posts/edit', {post: post, csrfToken: req.csrfToken()});
 });
-
 router.post('/write', loginRequired, upload.single('thumbnail'), csrfProtection, function(req, res) {
     var post = new postModel({
         title: req.body.title,
@@ -105,19 +94,11 @@ router.post('/write', loginRequired, upload.single('thumbnail'), csrfProtection,
 });
 
 
-
-
 router.get('/delete/:id', function(req, res) {
     postModel.remove({id: req.params.id}, function(err) {
         res.redirect('/posts');
     });
 });
-
-
-
-
-
-
 
 
 router.post('/ajax_comment/insert', function(req, res) {
@@ -133,7 +114,6 @@ router.post('/ajax_comment/insert', function(req, res) {
         });
     });
 });
-
 router.post('/ajax_comment/delete', function(req, res){
     if(req.xhr){ //ajax 일때만 응답
         CommentModel.remove({ id : parseInt(req.body.comment_id) } , function(err){
@@ -143,5 +123,6 @@ router.post('/ajax_comment/delete', function(req, res){
         res.status(404).send('Not found');
     }
 });
+
 
 module.exports = router;
